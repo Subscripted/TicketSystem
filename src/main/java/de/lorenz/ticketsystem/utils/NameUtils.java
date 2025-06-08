@@ -1,0 +1,20 @@
+package de.lorenz.ticketsystem.utils;
+
+public class NameUtils {
+
+    public static String shortenName(String fullName) {
+        if (fullName == null || fullName.isBlank()) return "";
+
+        String[] piece = fullName.trim().split("\\s+");
+
+        if (piece.length == 1) {
+            return piece[0].substring(0, Math.min(2, piece[0].length())).toUpperCase();
+        }
+
+        char firstnameLetter = piece[0].charAt(0);
+        char lastnameLetter = piece[1].charAt(0);
+
+        return ("" + firstnameLetter + lastnameLetter).toUpperCase();
+    }
+}
+

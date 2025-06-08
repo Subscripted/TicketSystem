@@ -1,0 +1,40 @@
+{
+  "responseCodes": {
+    "ok": {
+      "text": "OK",
+      "number": 200
+    },
+    "created": {
+      "text": "Created",
+      "number": 201
+    },
+    "no_content": {
+      "text": "No Content",
+      "number": 204
+    },
+    "bad_request": {
+      "text": "Bad Request",
+      "number": 400
+    },
+    "unauthorized": {
+      "text": "Unauthorized",
+      "number": 401
+    },
+    "forbidden": {
+      "text": "Forbidden",
+      "number": 403
+    },
+    "not_found": {
+      "text": "Not Found",
+      "number": 404
+    },
+    "conflict": {
+      "text": "Conflict",
+      "number": 409
+    },
+    "internal_error": {
+      "text": "Internal Error",
+      "number": 500
+    }
+  }
+}
