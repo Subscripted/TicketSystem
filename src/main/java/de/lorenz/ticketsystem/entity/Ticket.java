@@ -26,6 +26,10 @@ public class Ticket {
     @JoinColumn(name = "assigned_user_id")
     TicketUser assignedUser;
 
+    @ManyToOne
+    @JoinColumn(name = "assigned_tester_id")
+    TicketUser assignedTester;
+
     @Column(name = "date_created", nullable = false)
     LocalDateTime insertDate;
 

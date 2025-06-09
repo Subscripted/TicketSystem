@@ -4,7 +4,8 @@ public record TicketCreateResponse
         (
                 String title,
                 Long assignedUserId,
-                int type,
-                int status
+                Integer type,
+                Integer status,
+                Long assignedTesterId
         ) {
 }

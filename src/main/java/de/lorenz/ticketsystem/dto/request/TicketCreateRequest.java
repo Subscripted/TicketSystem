@@ -3,8 +3,9 @@ package de.lorenz.ticketsystem.dto.request;
 public record TicketCreateRequest
         (
                 String title,
-                int type,
-                int status,
-                long assignedUserId
+                Integer type,
+                Integer status,
+                Long assignedUserId,
+                Long assignedTesterId
         ) {
 }

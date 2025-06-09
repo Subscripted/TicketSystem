@@ -2,6 +2,7 @@ package de.lorenz.ticketsystem.controller.ticket;
 
 
 import de.lorenz.ticketsystem.dto.request.TicketCreateRequest;
+import de.lorenz.ticketsystem.dto.request.TicketUpdateRequest;
 import de.lorenz.ticketsystem.entity.Ticket;
 import de.lorenz.ticketsystem.service.TicketService;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
@@ -22,12 +23,17 @@ public class TicketController {
 
     @PostMapping("/create")
     public ResponseWrapper<?> createTicket(@RequestBody TicketCreateRequest request) {
-       return ticketService.createTicket(request);
+        return ticketService.createTicket(request);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseWrapper<?> deleteTicket(@PathVariable long id) {
         return ticketService.deleteTicket(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseWrapper<?> updateTicket(@PathVariable Long id, @RequestBody TicketUpdateRequest request) {
+        return ticketService.updateTicket(id, request);
     }
 
 
