@@ -30,7 +30,7 @@ public class TicketUserController {
         return ticketUserService.deleteTicketUser(id);
     }
 
-   @PutMapping("/update/{id}")
+   @PatchMapping("/update/{id}")
    public ResponseWrapper<?> updateTicketUser(@PathVariable Long id, @RequestBody TicketUserUpdateRequest request) {
         return ticketUserService.updateTicketUser(id, request);
    }

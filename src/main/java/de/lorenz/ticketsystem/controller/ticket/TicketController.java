@@ -3,7 +3,6 @@ package de.lorenz.ticketsystem.controller.ticket;
 
 import de.lorenz.ticketsystem.dto.request.TicketCreateRequest;
 import de.lorenz.ticketsystem.dto.request.TicketUpdateRequest;
-import de.lorenz.ticketsystem.entity.Ticket;
 import de.lorenz.ticketsystem.service.TicketService;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
 import lombok.AccessLevel;
@@ -31,7 +30,7 @@ public class TicketController {
         return ticketService.deleteTicket(id);
     }
 
-    @PutMapping("/update/{id}")
+    @PatchMapping("/update/{id}")
     public ResponseWrapper<?> updateTicket(@PathVariable Long id, @RequestBody TicketUpdateRequest request) {
         return ticketService.updateTicket(id, request);
     }
