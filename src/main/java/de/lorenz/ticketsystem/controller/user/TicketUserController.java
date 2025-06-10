@@ -2,7 +2,6 @@ package de.lorenz.ticketsystem.controller.user;
 
 
 import de.lorenz.ticketsystem.dto.request.TicketUserCreateRequest;
-import de.lorenz.ticketsystem.dto.request.TicketUserDeteleRequest;
 import de.lorenz.ticketsystem.dto.request.TicketUserUpdateRequest;
 import de.lorenz.ticketsystem.service.TicketUserService;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;

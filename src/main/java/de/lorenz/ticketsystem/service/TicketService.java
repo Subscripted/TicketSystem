@@ -49,6 +49,7 @@ public class TicketService {
         Ticket ticket = new Ticket();
         ticket.setTitle(request.title());
         ticket.setType(request.type());
+        ticket.setNotiz(request.notiz());
         ticket.setStatus(request.status());
         ticket.setAssignedUser(user.get());
         tester.ifPresent(ticket::setAssignedTester);
@@ -58,6 +59,7 @@ public class TicketService {
         return ResponseWrapper.ok(
                 new TicketCreateResponse(
                         ticket.getTitle(),
+                        ticket.getNotiz(),
                         ticket.getAssignedUser().getUserId(),
                         ticket.getType(),
                         ticket.getStatus(),

@@ -21,6 +21,7 @@ public class Ticket {
     String title;
     int type;
     int status;
+    String notiz;
 
     @ManyToOne
     @JoinColumn(name = "assigned_user_id")

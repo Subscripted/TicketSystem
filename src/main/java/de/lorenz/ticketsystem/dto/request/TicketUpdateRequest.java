@@ -5,6 +5,7 @@ import java.util.List;
 public record TicketUpdateRequest
         (
                 String title,
+                String notiz,
                 Integer status,
                 Integer type,
                 Long testerId,
