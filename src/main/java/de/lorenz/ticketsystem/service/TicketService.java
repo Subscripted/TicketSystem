@@ -1,9 +1,11 @@
 package de.lorenz.ticketsystem.service;
 
 import de.lorenz.ticketsystem.dto.request.TicketCreateRequest;
+import de.lorenz.ticketsystem.dto.request.TicketSelectRequest;
 import de.lorenz.ticketsystem.dto.request.TicketUpdateRequest;
 import de.lorenz.ticketsystem.dto.response.TicketCreateResponse;
 import de.lorenz.ticketsystem.dto.response.TicketDeleteResponse;
+import de.lorenz.ticketsystem.dto.response.TicketSelectResponse;
 import de.lorenz.ticketsystem.dto.response.TicketUpdateResponse;
 import de.lorenz.ticketsystem.entity.Ticket;
 import de.lorenz.ticketsystem.entity.TicketUser;
@@ -15,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -30,7 +29,7 @@ public class TicketService {
 
     public ResponseWrapper<?> createTicket(TicketCreateRequest request) {
 
-        if (request.assignedUserId() == null){
+        if (request.assignedUserId() == null) {
             return ResponseWrapper.error("User not found", "You have to assign a user first.");
         }
 
@@ -139,6 +138,33 @@ public class TicketService {
         ticketRepository.save(ticket);
         return ResponseWrapper.ok(new TicketUpdateResponse(changedFields));
     }
+
+    public ResponseWrapper<?> selectTickets(TicketSelectRequest request) {
+        List<Ticket> tickets;
+
+        if (request.assignedUserId() != null && request.type() != null) {
+            tickets = ticketRepository.findByAssignedUserIdAndType(request.assignedUserId(), request.type());
+        } else if (request.assignedUserId() != null) {
+            tickets = ticketRepository.findByAssignedUser_UserId(request.assignedUserId());
+        } else if (request.type() != null) {
+            tickets = ticketRepository.findByType(request.type());
+        } else {
+            tickets = ticketRepository.findAll();
+        }
+
+        List<TicketSelectResponse> responses = tickets.stream()
+                .map(ticket -> new TicketSelectResponse(
+                        ticket.getId(),
+                        getIdOrNull(ticket.getAssignedUser()),
+                        getIdOrNull(ticket.getAssignedTester()),
+                        ticket.getTitle(),
+                        ticket.getNotiz()
+                ))
+                .toList();
+
+        return ResponseWrapper.ok(responses);
+    }
+
 
     private Long getIdOrNull(TicketUser user) {
         return user != null ? user.getUserId() : null;

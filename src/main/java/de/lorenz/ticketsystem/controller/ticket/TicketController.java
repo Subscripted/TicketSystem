@@ -2,6 +2,7 @@ package de.lorenz.ticketsystem.controller.ticket;
 
 
 import de.lorenz.ticketsystem.dto.request.TicketCreateRequest;
+import de.lorenz.ticketsystem.dto.request.TicketSelectRequest;
 import de.lorenz.ticketsystem.dto.request.TicketUpdateRequest;
 import de.lorenz.ticketsystem.service.TicketService;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
@@ -35,5 +36,9 @@ public class TicketController {
         return ticketService.updateTicket(id, request);
     }
 
+    @PostMapping("/select")
+    public ResponseWrapper<?> selectTickets(@RequestBody TicketSelectRequest request) {
+        return ticketService.selectTickets(request);
+    }
 
 }
