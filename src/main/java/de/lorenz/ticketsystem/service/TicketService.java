@@ -140,8 +140,11 @@ public class TicketService {
     }
 
     public ResponseWrapper<?> selectTickets(TicketSelectRequest request) {
-        List<Ticket> tickets;
+        return getTicketsWithRules(request);
+    }
 
+    private ResponseWrapper<?> getTicketsWithRules(TicketSelectRequest request) {
+        List<Ticket> tickets;
         if (request.assignedUserId() != null && request.type() != null) {
             tickets = ticketRepository.findByAssignedUserIdAndType(request.assignedUserId(), request.type());
         } else if (request.assignedUserId() != null) {
