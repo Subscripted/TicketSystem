@@ -1,11 +1,14 @@
-CREATE TABLE IF NOT EXISTS ticket_times (
-    id                 BIGINT AUTO_INCREMENT PRIMARY KEY,
-    ticket_id          BIGINT NOT NULL,
-    ticket_user_id     BIGINT NOT NULL,
-    time               INT NOT NULL DEFAULT 0,
-    date_insert        DATETIME NOT NULL,
-    date_last_updated  DATETIME NOT NULL,
-
-    CONSTRAINT fk_ticket FOREIGN KEY (ticket_id) REFERENCES ticket (id),
-    CONSTRAINT fk_ticket_user FOREIGN KEY (ticket_user_id) REFERENCES ticket_user (user_id)
+CREATE TABLE IF NOT EXISTS ticket (
+  id                 BIGINT AUTO_INCREMENT PRIMARY KEY,Add commentMore actions
+    title              VARCHAR(255) DEFAULT '',
+    type               INT          DEFAULT 0  NOT NULL,
+    status             INT          DEFAULT 0  NOT NULL,
+    notiz              TEXT         DEFAULT '' NOT NULL,
+    assigned_user_id   BIGINT,
+    assigned_tester_id BIGINT,Add commentMore actions
+    tester             TINYINT(1)   DEFAULT 0,
+    date_created       DATETIME                NOT NULL,
+    date_last_updated  DATETIME                NOT NULL,
+    CONSTRAINT assigned_user FOREIGN KEY (assigned_user_id) REFERENCES ticket_user (user_id),
+    CONSTRAINT assigned_tester FOREIGN KEY (assigned_tester_id) REFERENCES ticket_user (user_id)
 );
