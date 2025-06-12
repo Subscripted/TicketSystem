@@ -2,6 +2,9 @@ package de.lorenz.ticketsystem.security;
 
 import de.lorenz.ticketsystem.controller.auth.AuthEntryPoint;
 import de.lorenz.ticketsystem.service.TokenService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,15 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SecurityConfig {
 
-    private final TokenService tokenService;
-    private final AuthEntryPoint customAuthEntryPoint;
-
-    public SecurityConfig(TokenService tokenService, AuthEntryPoint customAuthEntryPoint) {
-        this.tokenService = tokenService;
-        this.customAuthEntryPoint = customAuthEntryPoint;
-    }
+    final TokenService tokenService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
