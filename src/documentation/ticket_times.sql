@@ -1,11 +1,11 @@
+CREATE TABLE IF NOT EXISTS ticket_times (
+    id                 BIGINT AUTO_INCREMENT PRIMARY KEY,
+    ticket_id          BIGINT NOT NULL,
+    ticket_user_id     BIGINT NOT NULL,
+    time               INT NOT NULL DEFAULT 0,         -- z. B. Minuten
+    date_insert        DATETIME NOT NULL,
+    date_last_updated  DATETIME NOT NULL,
 
-CREATE TABLE IF NOT EXISTS ticket_times
-(
-    ticketId                 BIGINT PRIMARY KEY,
-    ticketUserId              BIGINT NOT NULL,
-    time                  INT DEFAULT 0 NOT NULL,
-    date_insert       DATETIME                NOT NULL,
-    date_last_updated  DATETIME                NOT NULL,
-    CONSTRAINT ticketId FOREIGN KEY (id) REFERENCES ticket (id),
-    CONSTRAINT ticketUserId FOREIGN KEY (assigned_user_id) REFERENCES ticket_user (user_id)
+    CONSTRAINT fk_ticket FOREIGN KEY (ticket_id) REFERENCES ticket (id),
+    CONSTRAINT fk_ticket_user FOREIGN KEY (ticket_user_id) REFERENCES ticket_user (user_id)
 );
