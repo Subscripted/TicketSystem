@@ -2,12 +2,17 @@ package de.lorenz.ticketsystem.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "TicketTime")
+@Getter
+@Setter
 public class TicketTime {
 
     @Id
