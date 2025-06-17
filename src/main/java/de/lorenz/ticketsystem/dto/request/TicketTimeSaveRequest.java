@@ -2,7 +2,7 @@ package de.lorenz.ticketsystem.dto.request;
 
 public record TicketTimeSaveRequest
         (
-                Long id,
+                Long userId,
                 Long ticketId,
                 Integer zeitInSekunden
         ) {

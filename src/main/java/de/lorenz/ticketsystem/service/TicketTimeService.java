@@ -1,6 +1,8 @@
 package de.lorenz.ticketsystem.service;
 
 import de.lorenz.ticketsystem.dto.request.TicketTimeSaveRequest;
+import de.lorenz.ticketsystem.dto.request.TicketTimeSelectRequest;
+import de.lorenz.ticketsystem.dto.response.TicketTimeSelectResponse;
 import de.lorenz.ticketsystem.entity.Ticket;
 import de.lorenz.ticketsystem.entity.TicketTime;
 import de.lorenz.ticketsystem.entity.TicketUser;
@@ -16,6 +18,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
+//todo: Anstatt .get bei Optional<> zu nutzen, bitte .orElseThrow
+
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Service
@@ -26,13 +31,8 @@ public class TicketTimeService {
     final TicketRepository ticketRepository;
 
     public ResponseWrapper<?> saveTime(TicketTimeSaveRequest request) {
-
-        TicketTime ticketTime = new TicketTime();
-        Optional<TicketUser> user = ticketUserRepository.findById(request.id());
-        Optional<Ticket> tickets = ticketRepository.findById(request.ticketId());
-
-        if (request.id() == null) {
-            return ResponseWrapper.error("Invalid UserID", "You need to assign a UderID");
+        if (request.userId() == null) {
+            return ResponseWrapper.error("Invalid UserID", "You need to assign a UserID");
         }
 
         if (request.ticketId() == null) {
@@ -43,14 +43,40 @@ public class TicketTimeService {
             return ResponseWrapper.error("Time error", "You have to assign a valid Time Value in Seconds");
         }
 
-        ticketTime.setId(request.ticketId());
-        ticketTime.setUser(user.get());
-        ticketTime.setTicket(tickets.get());
+        Optional<TicketUser> userOpt = ticketUserRepository.findById(request.userId());
+        if (userOpt.isEmpty()) {
+            return ResponseWrapper.error("Invalid UserID", "User not found.");
+        }
+
+        Optional<Ticket> ticketOpt = ticketRepository.findById(request.ticketId());
+        if (ticketOpt.isEmpty()) {
+            return ResponseWrapper.error("Invalid TicketID", "Ticket not found.");
+        }
+
+        TicketTime ticketTime = new TicketTime();
+        ticketTime.setUser(userOpt.get());
+        ticketTime.setTicket(ticketOpt.get());
         ticketTime.setTime(request.zeitInSekunden());
+
         ticketTimeRepository.save(ticketTime);
 
+        return ResponseWrapper.ok("Time entry saved successfully.");
+    }
 
-        return ResponseWrapper.ok("");
+
+    public ResponseWrapper<?> selectTime(TicketTimeSelectRequest request) {
+        if (request.ticketId() == null) {
+            return ResponseWrapper.error("Invalid TicketID", "You need to assign a TicketID");
+        }
+
+        Optional<TicketTime> ticketTimeOpt = ticketTimeRepository.findByTicketId(request.ticketId());
+        if (ticketTimeOpt.isEmpty()) {
+            return ResponseWrapper.error("Invalid TicketID", "Ticket not found.");
+        }
+
+        TicketTime ticketTime = ticketTimeOpt.get();
+        Integer time = ticketTime.getTime();
+        return ResponseWrapper.ok(new TicketTimeSelectResponse(time), "Time selected successfully.");
     }
 
 }

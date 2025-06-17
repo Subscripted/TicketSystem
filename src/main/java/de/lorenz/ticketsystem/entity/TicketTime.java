@@ -8,17 +8,18 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
-
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "TicketTime")
+@Entity
+@Table(name = "ticket_times")
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TicketTime {
 
     @Id
-    Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Long insertId;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "ticket_id", nullable = false)
     Ticket ticket;
 
@@ -26,7 +27,7 @@ public class TicketTime {
     @JoinColumn(name = "ticket_user_id", nullable = false)
     TicketUser user;
 
-    @Column(name = "time")
+    @Column(name = "time", nullable = false)
     Integer time;
 
     @Column(name = "date_insert", nullable = false)
@@ -34,7 +35,6 @@ public class TicketTime {
 
     @Column(name = "date_last_updated", nullable = false)
     LocalDateTime lastUpdated;
-
 
     @PrePersist
     public void prePersist() {

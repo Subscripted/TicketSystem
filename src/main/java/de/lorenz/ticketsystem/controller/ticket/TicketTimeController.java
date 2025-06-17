@@ -2,6 +2,8 @@ package de.lorenz.ticketsystem.controller.ticket;
 
 
 import de.lorenz.ticketsystem.dto.request.TicketTimeSaveRequest;
+import de.lorenz.ticketsystem.dto.request.TicketTimeSelectRequest;
+import de.lorenz.ticketsystem.service.TicketTimeService;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +16,15 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TicketTimeController {
 
-    @PostMapping("/save/{id}")
-    public ResponseWrapper<?> saveTime(@ResponseBody TicketTimeSaveRequest) {
+    final TicketTimeService ticketTimeService;
 
-        return
+    @PostMapping("/save")
+    public ResponseWrapper<?> saveTime(@RequestBody TicketTimeSaveRequest request) {
+        return ticketTimeService.saveTime(request);
+    }
+
+    @GetMapping("/select")
+    public ResponseWrapper<?> selectTime(@RequestBody TicketTimeSelectRequest request) {
+        return ticketTimeService.selectTime(request);
     }
 }
