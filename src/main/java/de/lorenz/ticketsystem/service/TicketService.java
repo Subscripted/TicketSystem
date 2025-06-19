@@ -31,7 +31,7 @@ public class TicketService {
 
     public ResponseWrapper<?> createTicket(TicketCreateRequest request) {
 
-        String apiResponse = "";
+        String apiResponse;
 
         if (request.assignedUserId() == null) {
             return ResponseWrapper.error("User not found", "You have to assign a user first.");
@@ -146,12 +146,14 @@ public class TicketService {
         return ResponseWrapper.ok(new TicketUpdateResponse(changedFields));
     }
 
+    //todo: Anschauen wie die Respopnse aussieht
     public ResponseWrapper<?> selectTickets(TicketSelectRequest request) {
-        return getTicketsWithRules(request);
+        return ResponseWrapper.ok(getTicketsWithRules(request));
     }
 
-    private ResponseWrapper<?> getTicketsWithRules(TicketSelectRequest request) {
+    private List<TicketSelectResponse> getTicketsWithRules(TicketSelectRequest request) {
         List<Ticket> tickets;
+
         if (request.assignedUserId() != null && request.type() != null) {
             tickets = ticketRepository.findByAssignedUserIdAndType(request.assignedUserId(), request.type());
         } else if (request.assignedUserId() != null) {
@@ -162,7 +164,7 @@ public class TicketService {
             tickets = ticketRepository.findAll();
         }
 
-        List<TicketSelectResponse> responses = tickets.stream()
+        return tickets.stream()
                 .map(ticket -> new TicketSelectResponse(
                         ticket.getId(),
                         getIdOrNull(ticket.getAssignedUser()),
@@ -172,7 +174,6 @@ public class TicketService {
                 ))
                 .toList();
 
-        return ResponseWrapper.ok(responses);
     }
 
 
@@ -181,7 +182,6 @@ public class TicketService {
     }
 
     private String getPropMessage(String key, String lang) {
-        String res = languageService.getMessage(key, lang);
-        return res;
+        return languageService.getMessage(key, lang);
     }
 }

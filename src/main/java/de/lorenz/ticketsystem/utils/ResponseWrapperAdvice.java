@@ -1,6 +1,5 @@
 package de.lorenz.ticketsystem.utils;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
