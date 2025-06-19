@@ -31,6 +31,8 @@ public class TicketService {
 
     public ResponseWrapper<?> createTicket(TicketCreateRequest request) {
 
+        String apiResponse = "";
+
         if (request.assignedUserId() == null) {
             return ResponseWrapper.error("User not found", "You have to assign a user first.");
         }
@@ -58,9 +60,7 @@ public class TicketService {
         ticketRepository.save(ticket);
 
 
-        String rM = languageService.getMessage("" +
-                "" +
-                "",request.lang());
+        apiResponse = getPropMessage("api.response.ok", request.lang());
         return ResponseWrapper.ok(
                 new TicketCreateResponse(
                         ticket.getTitle(),
@@ -69,7 +69,8 @@ public class TicketService {
                         ticket.getType(),
                         ticket.getStatus(),
                         tester.map(TicketUser::getUserId).orElse(null)
-                )
+                ),
+                apiResponse
         );
     }
 
@@ -177,5 +178,10 @@ public class TicketService {
 
     private Long getIdOrNull(TicketUser user) {
         return user != null ? user.getUserId() : null;
+    }
+
+    private String getPropMessage(String key, String lang) {
+        String res = languageService.getMessage(key, lang);
+        return res;
     }
 }
