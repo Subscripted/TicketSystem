@@ -3,6 +3,7 @@ package de.lorenz.ticketsystem.controller.ticket;
 
 import de.lorenz.ticketsystem.dto.request.TicketTimeSaveRequest;
 import de.lorenz.ticketsystem.dto.request.TicketTimeSelectRequest;
+import de.lorenz.ticketsystem.dto.request.TicketTimeUpdateRequest;
 import de.lorenz.ticketsystem.service.TicketTimeService;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
 import lombok.AccessLevel;
@@ -26,5 +27,10 @@ public class TicketTimeController {
     @GetMapping("/select")
     public ResponseWrapper<?> selectTime(@RequestBody TicketTimeSelectRequest request) {
         return ticketTimeService.selectTime(request);
+    }
+
+    @PutMapping("/update/{ticketId}")
+    public ResponseWrapper<?> updateTime(@RequestParam Long ticketId, @RequestBody TicketTimeUpdateRequest request) {
+        return ticketTimeService.updateTime(ticketId, request);
     }
 }

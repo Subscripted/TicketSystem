@@ -2,6 +2,7 @@ package de.lorenz.ticketsystem.service;
 
 import de.lorenz.ticketsystem.dto.request.TicketTimeSaveRequest;
 import de.lorenz.ticketsystem.dto.request.TicketTimeSelectRequest;
+import de.lorenz.ticketsystem.dto.request.TicketTimeUpdateRequest;
 import de.lorenz.ticketsystem.dto.response.TicketTimeSelectResponse;
 import de.lorenz.ticketsystem.entity.Ticket;
 import de.lorenz.ticketsystem.entity.TicketTime;
@@ -78,4 +79,31 @@ public class TicketTimeService {
         return ResponseWrapper.ok(new TicketTimeSelectResponse(time), "Time selected successfully.");
     }
 
+    //todo: Testen!!
+    public ResponseWrapper<?> updateTime(Long ticketId, TicketTimeUpdateRequest request) {
+        if (request.insertId() == null) {
+            return ResponseWrapper.error("Invalid InsertId", "You need to assign a InsertId fro locating the correct Time");
+        }
+
+        if (request.zeit() == null) {
+            return ResponseWrapper.error("Invalid Zeit", "You need to assign a valid Time Value in Seconds.");
+        }
+
+        Optional<TicketTime> ticketTimeOpt = ticketTimeRepository.findByTicketId(ticketId);
+
+        if (ticketTimeOpt.isEmpty()) {
+            return ResponseWrapper.error("Invalid TicketID", "Ticket not found.");
+        }
+
+        TicketTime ticketTime = ticketTimeOpt.get();
+
+        if (request.zeit() < 1) {
+            ticketTimeRepository.delete(ticketTime);
+            return ResponseWrapper.error("Invalid Zeit", "Ticket Time was deleted");
+        }
+        ticketTime.setTime(request.zeit());
+
+        ticketTimeRepository.save(ticketTime);
+        return ResponseWrapper.ok("Time updated successfully.");
+    }
 }
