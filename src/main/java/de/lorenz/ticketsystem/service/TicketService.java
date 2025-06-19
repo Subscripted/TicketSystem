@@ -11,6 +11,7 @@ import de.lorenz.ticketsystem.entity.Ticket;
 import de.lorenz.ticketsystem.entity.TicketUser;
 import de.lorenz.ticketsystem.repo.TicketRepository;
 import de.lorenz.ticketsystem.repo.TicketUserRepository;
+import de.lorenz.ticketsystem.service.lang.LanguageService;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +21,13 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class TicketService {
 
-    final TicketRepository ticketRepository;
-    final TicketUserRepository ticketUserRepository;
+    TicketRepository ticketRepository;
+    TicketUserRepository ticketUserRepository;
+    LanguageService languageService;
 
     public ResponseWrapper<?> createTicket(TicketCreateRequest request) {
 
@@ -55,6 +57,10 @@ public class TicketService {
 
         ticketRepository.save(ticket);
 
+
+        String rM = languageService.getMessage("" +
+                "" +
+                "",request.lang());
         return ResponseWrapper.ok(
                 new TicketCreateResponse(
                         ticket.getTitle(),

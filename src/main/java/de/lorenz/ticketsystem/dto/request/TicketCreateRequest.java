@@ -7,6 +7,7 @@ public record TicketCreateRequest
                 Integer type,
                 Integer status,
                 Long assignedUserId,
-                Long assignedTesterId
+                Long assignedTesterId,
+                String lang
         ) {
 }
