@@ -4,6 +4,7 @@ public record TicketTimeSaveRequest
         (
                 Long userId,
                 Long ticketId,
-                Integer zeitInSekunden
+                Integer zeitInSekunden,
+                String lang
         ) {
 }

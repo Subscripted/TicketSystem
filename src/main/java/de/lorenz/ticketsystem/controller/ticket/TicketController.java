@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TicketController {
 
-
     final TicketService ticketService;
-
 
     @PostMapping("/create")
     public ResponseWrapper<?> createTicket(@RequestBody TicketCreateRequest request) {

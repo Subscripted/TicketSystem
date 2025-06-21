@@ -29,8 +29,8 @@ public class TicketTimeController {
         return ticketTimeService.selectTime(request);
     }
 
-    @PutMapping("/update/{ticketId}")
-    public ResponseWrapper<?> updateTime(@RequestParam Long ticketId, @RequestBody TicketTimeUpdateRequest request) {
+    @PatchMapping("/update/{ticketId}")
+    public ResponseWrapper<?> updateTime(@PathVariable Long ticketId, @RequestBody TicketTimeUpdateRequest request) {
         return ticketTimeService.updateTime(ticketId, request);
     }
 }

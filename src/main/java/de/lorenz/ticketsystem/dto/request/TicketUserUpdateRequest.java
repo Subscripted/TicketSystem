@@ -7,6 +7,7 @@ public record TicketUserUpdateRequest
         (
                 String email,
                 String name,
-                String shortName
+                String shortName,
+                String lang
         ){
 }

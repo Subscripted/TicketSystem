@@ -4,6 +4,7 @@ public record TokenCreateRequest
         (
                 String email,
                 String clientId,
-                String clientSecret
+                String clientSecret,
+                String lang
         ) {
 }

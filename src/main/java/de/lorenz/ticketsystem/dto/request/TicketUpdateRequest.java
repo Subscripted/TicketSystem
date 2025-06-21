@@ -9,6 +9,7 @@ public record TicketUpdateRequest
                 Integer status,
                 Integer type,
                 Long testerId,
-                Long assignedUserId
+                Long assignedUserId,
+                String lang
         ) {
 }

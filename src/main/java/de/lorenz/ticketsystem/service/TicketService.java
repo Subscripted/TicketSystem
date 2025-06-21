@@ -146,12 +146,11 @@ public class TicketService {
         return ResponseWrapper.ok(new TicketUpdateResponse(changedFields));
     }
 
-    //todo: Anschauen wie die Respopnse aussieht
     public ResponseWrapper<?> selectTickets(TicketSelectRequest request) {
-        return ResponseWrapper.ok(getTicketsWithRules(request));
+        return getTicketsWithRules(request);
     }
 
-    private List<TicketSelectResponse> getTicketsWithRules(TicketSelectRequest request) {
+    private ResponseWrapper<?> getTicketsWithRules(TicketSelectRequest request) {
         List<Ticket> tickets;
 
         if (request.assignedUserId() != null && request.type() != null) {
@@ -164,7 +163,11 @@ public class TicketService {
             tickets = ticketRepository.findAll();
         }
 
-        return tickets.stream()
+        if (tickets.isEmpty()) {
+            return ResponseWrapper.badRequest(List.of(), "No tickets found");
+        }
+
+        List<TicketSelectResponse> responseList = tickets.stream()
                 .map(ticket -> new TicketSelectResponse(
                         ticket.getId(),
                         getIdOrNull(ticket.getAssignedUser()),
@@ -174,6 +177,7 @@ public class TicketService {
                 ))
                 .toList();
 
+        return ResponseWrapper.ok(responseList, "Tickets retrieved successfully.");
     }
 
 

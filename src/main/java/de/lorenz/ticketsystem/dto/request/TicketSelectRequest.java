@@ -4,6 +4,7 @@ public record TicketSelectRequest(
         Long id,
         Long assignedUserId,
         Integer type,
-        Integer status
+        Integer status,
+        String lang
 ) {
 }
