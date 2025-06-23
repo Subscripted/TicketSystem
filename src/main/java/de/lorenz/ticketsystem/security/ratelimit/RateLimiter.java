@@ -43,8 +43,8 @@ public class RateLimiter extends OncePerRequestFilter {
             innerResponse.put("message", GlobalExceptionMsg.TOO_MANY_REQUESTS.getExceptionMsg());
 
             ResponseWrapper<Object> wrapper = new ResponseWrapper<>(
-                    innerResponse,
                     null,
+                    innerResponse,
                     GlobalHttpStatusCode.FORBIDDEN.getCode()
             );
 

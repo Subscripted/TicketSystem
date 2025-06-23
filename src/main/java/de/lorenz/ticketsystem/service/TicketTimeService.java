@@ -10,6 +10,7 @@ import de.lorenz.ticketsystem.entity.TicketUser;
 import de.lorenz.ticketsystem.repo.TicketRepository;
 import de.lorenz.ticketsystem.repo.TicketTimeRepository;
 import de.lorenz.ticketsystem.repo.TicketUserRepository;
+import de.lorenz.ticketsystem.service.lang.LanguageService;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,14 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class TicketTimeService {
 
-    final TicketTimeRepository ticketTimeRepository;
-    final TicketUserRepository ticketUserRepository;
-    final TicketRepository ticketRepository;
+    TicketTimeRepository ticketTimeRepository;
+    TicketUserRepository ticketUserRepository;
+    TicketRepository ticketRepository;
+    LanguageService languageService;
 
     public ResponseWrapper<?> saveTime(TicketTimeSaveRequest request) {
         if (request.userId() == null) {
@@ -57,7 +59,7 @@ public class TicketTimeService {
 
         ticketTimeRepository.save(ticketTime);
 
-        return ResponseWrapper.ok("Time entry saved successfully.");
+        return ResponseWrapper.ok("Time entry saved successfully.", getPropMessage("api.response.200", request.lang()));
     }
 
 
@@ -100,7 +102,11 @@ public class TicketTimeService {
         ticketTime.setTime(request.zeit());
 
         ticketTimeRepository.save(ticketTime);
-        return ResponseWrapper.ok("Time updated successfully.");
+        return ResponseWrapper.ok("Time updated successfully.", getPropMessage("api.response.200", request.lang()));
+    }
+
+    private String getPropMessage(String key, String lang) {
+        return languageService.getMessage(key, lang);
     }
 
 }

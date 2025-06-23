@@ -6,6 +6,7 @@ import de.lorenz.ticketsystem.entity.LoginCreds;
 import de.lorenz.ticketsystem.globals.GlobalExceptionMsg;
 import de.lorenz.ticketsystem.repo.ApiTokenRepository;
 import de.lorenz.ticketsystem.repo.LoginCredsRepository;
+import de.lorenz.ticketsystem.service.lang.LanguageService;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +21,13 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class TokenService {
 
-    final ApiTokenRepository apiTokenRepository;
-    final LoginCredsRepository loginCredsRepository;
+    ApiTokenRepository apiTokenRepository;
+    LoginCredsRepository loginCredsRepository;
+    LanguageService languageService;
 
     @Scheduled(fixedRate = 60000)
     @Transactional
@@ -58,13 +60,13 @@ public class TokenService {
         response = new HashMap<>();
         if (existingToken.isPresent()) {
             response.put("token", existingToken.get());
-            return ResponseWrapper.ok(response);
+            return ResponseWrapper.ok(response, getPropMessage("api.response.200", request.lang()));
         }
 
         String newToken = generateToken(request.email());
         response.put("message", GlobalExceptionMsg.TOKEN_RESPONSE.getExceptionMsg());
         response.put("token", newToken);
-        return ResponseWrapper.ok(response);
+        return ResponseWrapper.ok(response, getPropMessage("api.response.200", request.lang()));
 
     }
 
@@ -96,5 +98,9 @@ public class TokenService {
         return apiTokenRepository.findByToken(tokenValue)
                 .filter(t -> t.getExpiresAt().isAfter(LocalDateTime.now()))
                 .isPresent();
+    }
+
+    private String getPropMessage(String key, String lang) {
+        return languageService.getMessage(key, lang);
     }
 }

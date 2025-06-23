@@ -2,6 +2,7 @@ package de.lorenz.ticketsystem.controller.ticket;
 
 
 import de.lorenz.ticketsystem.dto.request.TicketCreateRequest;
+import de.lorenz.ticketsystem.dto.request.TicketDeleteRequest;
 import de.lorenz.ticketsystem.dto.request.TicketSelectRequest;
 import de.lorenz.ticketsystem.dto.request.TicketUpdateRequest;
 import de.lorenz.ticketsystem.service.TicketService;
@@ -25,8 +26,8 @@ public class TicketController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseWrapper<?> deleteTicket(@PathVariable long id) {
-        return ticketService.deleteTicket(id);
+    public ResponseWrapper<?> deleteTicket(@PathVariable long id, @RequestBody TicketDeleteRequest request) {
+        return ticketService.deleteTicket(id, request);
     }
 
     @PatchMapping("/update/{id}")

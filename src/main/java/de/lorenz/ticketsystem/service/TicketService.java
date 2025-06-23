@@ -1,6 +1,7 @@
 package de.lorenz.ticketsystem.service;
 
 import de.lorenz.ticketsystem.dto.request.TicketCreateRequest;
+import de.lorenz.ticketsystem.dto.request.TicketDeleteRequest;
 import de.lorenz.ticketsystem.dto.request.TicketSelectRequest;
 import de.lorenz.ticketsystem.dto.request.TicketUpdateRequest;
 import de.lorenz.ticketsystem.dto.response.TicketCreateResponse;
@@ -74,7 +75,7 @@ public class TicketService {
         );
     }
 
-    public ResponseWrapper<?> deleteTicket(long id) {
+    public ResponseWrapper<?> deleteTicket(long id, TicketDeleteRequest request) {
         Optional<Ticket> ticketOpt = ticketRepository.findById(id);
         if (ticketOpt.isEmpty()) {
             return ResponseWrapper.badRequest("Ticket not found", "No ticket with ID " + id);
@@ -88,7 +89,8 @@ public class TicketService {
                         ticket.getId(),
                         ticket.getTitle(),
                         ticket.getAssignedUser().getUserId()
-                )
+                ),
+                getPropMessage("api.response.200", request.lang())
         );
     }
 
@@ -143,7 +145,7 @@ public class TicketService {
         }
 
         ticketRepository.save(ticket);
-        return ResponseWrapper.ok(new TicketUpdateResponse(changedFields));
+        return ResponseWrapper.ok(new TicketUpdateResponse(changedFields), getPropMessage("api.response.200", request.lang()));
     }
 
     public ResponseWrapper<?> selectTickets(TicketSelectRequest request) {
@@ -177,7 +179,7 @@ public class TicketService {
                 ))
                 .toList();
 
-        return ResponseWrapper.ok(responseList, "Tickets retrieved successfully.");
+        return ResponseWrapper.ok(responseList, getPropMessage("api.response.200", request.lang()));
     }
 
 

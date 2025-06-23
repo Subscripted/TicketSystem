@@ -1,11 +1,13 @@
 package de.lorenz.ticketsystem.service;
 
 import de.lorenz.ticketsystem.dto.request.TicketUserCreateRequest;
+import de.lorenz.ticketsystem.dto.request.TicketUserDeleteRequest;
 import de.lorenz.ticketsystem.dto.request.TicketUserUpdateRequest;
 import de.lorenz.ticketsystem.dto.response.TicketUserDeleteResponse;
 import de.lorenz.ticketsystem.dto.response.TicketUserUpdateResponse;
 import de.lorenz.ticketsystem.entity.TicketUser;
 import de.lorenz.ticketsystem.repo.TicketUserRepository;
+import de.lorenz.ticketsystem.service.lang.LanguageService;
 import de.lorenz.ticketsystem.utils.NameUtils;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
 import lombok.AccessLevel;
@@ -23,29 +25,30 @@ import java.util.Map;
 public class TicketUserService {
 
     final TicketUserRepository ticketUserRepository;
+    final LanguageService languageService;
     TicketUser user;
 
-    public ResponseWrapper<?> createTicketUser(TicketUserCreateRequest ticketUser) {
+    public ResponseWrapper<?> createTicketUser(TicketUserCreateRequest request) {
 
-        if (ticketUser.email() == null || ticketUser.email().isEmpty()) {
+        if (request.email() == null || request.email().isEmpty()) {
             return ResponseWrapper.error("Email cannot be empty");
         }
 
-        if (ticketUser.name() == null || ticketUser.name().isEmpty()) {
+        if (request.name() == null || request.name().isEmpty()) {
             return ResponseWrapper.error("Name cannot be empty");
         }
-        if (ticketUserRepository.existsByEmail(ticketUser.email())) {
-            return ResponseWrapper.badRequest("Email already exists", "The email address already exists as account" + ticketUser.email());
+        if (ticketUserRepository.existsByEmail(request.email())) {
+            return ResponseWrapper.badRequest("Email already exists", "The email address already exists as account" + request.email());
         }
         user = new TicketUser();
-        user.setEmail(ticketUser.email());
-        user.setName(ticketUser.name());
-        user.setShortName(NameUtils.shortenName(ticketUser.name()));
+        user.setEmail(request.email());
+        user.setName(request.name());
+        user.setShortName(NameUtils.shortenName(request.name()));
         ticketUserRepository.save(user);
-        return ResponseWrapper.ok(ticketUser);
+        return ResponseWrapper.ok(request, getPropMessage("api.response.200", request.lang()));
     }
 
-    public ResponseWrapper<?> deleteTicketUser(Long id) {
+    public ResponseWrapper<?> deleteTicketUser(Long id, TicketUserDeleteRequest request) {
         if (!ticketUserRepository.existsById(id)) {
             return ResponseWrapper.badRequest("User does not exist", "User with given ID does not exist");
         }
@@ -54,7 +57,7 @@ public class TicketUserService {
         assert user != null;
         TicketUserDeleteResponse response = new TicketUserDeleteResponse(user.getName(), user.getEmail(), LocalDateTime.now());
         ticketUserRepository.deleteById(id);
-        return ResponseWrapper.ok(response);
+        return ResponseWrapper.ok(response, getPropMessage("api.reponse.200", request.lang()));
     }
 
     public ResponseWrapper<?> updateTicketUser(Long id, TicketUserUpdateRequest request) {
@@ -83,5 +86,9 @@ public class TicketUserService {
         }
         ticketUserRepository.save(user);
         return ResponseWrapper.ok(new TicketUserUpdateResponse(id, changedFields), "Test");
+    }
+
+    private String getPropMessage(String key, String lang) {
+        return languageService.getMessage(key, lang);
     }
 }
