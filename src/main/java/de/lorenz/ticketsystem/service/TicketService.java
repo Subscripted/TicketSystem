@@ -60,7 +60,7 @@ public class TicketService {
         ticketRepository.save(ticket);
 
 
-        apiResponse = getPropMessage("api.response.ok", request.lang());
+        apiResponse = getPropMessage("api.response.200", request.lang());
         return ResponseWrapper.ok(
                 new TicketCreateResponse(
                         ticket.getTitle(),

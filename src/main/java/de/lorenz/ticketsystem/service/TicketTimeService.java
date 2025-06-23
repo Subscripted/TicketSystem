@@ -18,9 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
-//todo: Anstatt .get bei Optional<> zu nutzen, bitte .orElseThrow
-
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Service
@@ -79,7 +76,6 @@ public class TicketTimeService {
         return ResponseWrapper.ok(new TicketTimeSelectResponse(time), "Time selected successfully.");
     }
 
-    //todo: Testen!!
     public ResponseWrapper<?> updateTime(Long ticketId, TicketTimeUpdateRequest request) {
         if (request.insertId() == null) {
             return ResponseWrapper.error("Invalid InsertId", "You need to assign a InsertId fro locating the correct Time");
@@ -106,4 +102,5 @@ public class TicketTimeService {
         ticketTimeRepository.save(ticketTime);
         return ResponseWrapper.ok("Time updated successfully.");
     }
+
 }
