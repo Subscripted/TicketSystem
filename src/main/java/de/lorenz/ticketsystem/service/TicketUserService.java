@@ -40,7 +40,6 @@ public class TicketUserService {
         if (ticketUserRepository.existsByEmail(request.email())) {
             return ResponseWrapper.badRequest("Email already exists", "The email address already exists as account" + request.email());
         }
-        String d = "";
         user = new TicketUser();
         user.setEmail(request.email());
         user.setName(request.name());
