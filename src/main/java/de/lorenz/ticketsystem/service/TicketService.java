@@ -97,7 +97,7 @@ public class TicketService {
     public ResponseWrapper<?> updateTicket(long id, TicketUpdateRequest request) {
         Optional<Ticket> ticketOpt = ticketRepository.findById(id);
         if (ticketOpt.isEmpty()) {
-            return ResponseWrapper.badRequest("Ticket not found");
+            return ResponseWrapper.badRequest(getPropMessage("api.response.400", request.lang()),"Ticket not found");
         }
 
         Ticket ticket = ticketOpt.get();

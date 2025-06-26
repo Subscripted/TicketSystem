@@ -40,6 +40,7 @@ public class TicketUserService {
         if (ticketUserRepository.existsByEmail(request.email())) {
             return ResponseWrapper.badRequest("Email already exists", "The email address already exists as account" + request.email());
         }
+        String d = "";
         user = new TicketUser();
         user.setEmail(request.email());
         user.setName(request.name());
@@ -50,7 +51,7 @@ public class TicketUserService {
 
     public ResponseWrapper<?> deleteTicketUser(Long id, TicketUserDeleteRequest request) {
         if (!ticketUserRepository.existsById(id)) {
-            return ResponseWrapper.badRequest("User does not exist", "User with given ID does not exist");
+            return ResponseWrapper.badRequest("User does not exist", getPropMessage("api.response.400", request.lang()));
         }
 
         user = ticketUserRepository.findById(id).orElse(null);
@@ -63,7 +64,7 @@ public class TicketUserService {
     public ResponseWrapper<?> updateTicketUser(Long id, TicketUserUpdateRequest request) {
         user = ticketUserRepository.findById(id).orElse(null);
         if (user == null) {
-            return ResponseWrapper.badRequest("User does not exist", "User with given ID does not exist");
+            return ResponseWrapper.badRequest("User does not exist", getPropMessage("api.response.400", request.lang()));
         }
 
         Map<String, Object> changedFields = new HashMap<>();
@@ -74,7 +75,7 @@ public class TicketUserService {
 
         if (request.email() != null && !request.email().equals(user.getEmail())) {
             if (ticketUserRepository.existsByEmail(request.email())) {
-                return ResponseWrapper.error("E-Mail already in use");
+                return ResponseWrapper.badRequest("E-Mail already in use", getPropMessage("api.response.400", request.lang()));
             }
             user.setEmail(request.email());
             changedFields.put("email", user.getEmail());
