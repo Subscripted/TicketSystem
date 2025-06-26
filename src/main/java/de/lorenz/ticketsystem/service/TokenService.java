@@ -40,7 +40,7 @@ public class TokenService {
         return apiTokenRepository.findByEmailAndExpiresAtAfter(email, now)
                 .map(ApiToken::getToken);
     }
-
+    //todo: Record erstellen für Response
     public ResponseWrapper<?> createToken(TokenCreateRequest request) {
         Optional<LoginCreds> creds = loginCredsRepository.findByEmailAndClientIdAndClientSecret(
 
@@ -52,7 +52,7 @@ public class TokenService {
         Map<String, String> response = new HashMap<>();
         if (creds.isEmpty()) {
             response.put("message", GlobalExceptionMsg.UNAUTHORIZED.getExceptionMsg());
-            return ResponseWrapper.unauthorized(response, GlobalExceptionMsg.WRONG_LOGIN_CREDS.getExceptionMsg());
+            return ResponseWrapper.unauthorized(response, getPropMessage("api.response.401", request.lang()));
         }
 
         Optional<String> existingToken = getValidToken(request.email());

@@ -31,14 +31,14 @@ public class TicketUserService {
     public ResponseWrapper<?> createTicketUser(TicketUserCreateRequest request) {
 
         if (request.email() == null || request.email().isEmpty()) {
-            return ResponseWrapper.error("Email cannot be empty");
+            return ResponseWrapper.badRequest("Email cannot be empty", getPropMessage("api.response.400", request.lang()));
         }
 
         if (request.name() == null || request.name().isEmpty()) {
-            return ResponseWrapper.error("Name cannot be empty");
+            return ResponseWrapper.badRequest("Name cannot be empty", getPropMessage("api.response.400", request.lang()));
         }
         if (ticketUserRepository.existsByEmail(request.email())) {
-            return ResponseWrapper.badRequest("Email already exists", "The email address already exists as account" + request.email());
+            return ResponseWrapper.badRequest("The email address already exists as account" + request.email(), getPropMessage("api.response.400", request.lang()));
         }
         user = new TicketUser();
         user.setEmail(request.email());
@@ -85,7 +85,7 @@ public class TicketUserService {
             changedFields.put("shortName", request.shortName());
         }
         ticketUserRepository.save(user);
-        return ResponseWrapper.ok(new TicketUserUpdateResponse(id, changedFields), "Test");
+        return ResponseWrapper.ok(new TicketUserUpdateResponse(id, changedFields), getPropMessage("api.response.200", request.lang()));
     }
 
     private String getPropMessage(String key, String lang) {

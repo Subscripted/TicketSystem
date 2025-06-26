@@ -31,25 +31,25 @@ public class TicketTimeService {
 
     public ResponseWrapper<?> saveTime(TicketTimeSaveRequest request) {
         if (request.userId() == null) {
-            return ResponseWrapper.error("Invalid UserID", "You need to assign a UserID");
+            return ResponseWrapper.badRequest("You need to assign a UserID", getPropMessage("api.response.400", request.lang()));
         }
 
         if (request.ticketId() == null) {
-            return ResponseWrapper.error("Invalid TicketID", "You need to assign a TicketID");
+            return ResponseWrapper.badRequest("You need to assign a TicketID", getPropMessage("api.response.400", request.lang()));
         }
 
         if (request.zeitInSekunden() == null) {
-            return ResponseWrapper.error("Time error", "You have to assign a valid Time Value in Seconds");
+            return ResponseWrapper.badRequest("You have to assign a valid Time Value in Seconds", getPropMessage("api.response.400", request.lang()));
         }
 
         Optional<TicketUser> userOpt = ticketUserRepository.findById(request.userId());
         if (userOpt.isEmpty()) {
-            return ResponseWrapper.error("Invalid UserID", "User not found.");
+            return ResponseWrapper.badRequest("User not found.", getPropMessage("api.response.400", request.lang()));
         }
 
         Optional<Ticket> ticketOpt = ticketRepository.findById(request.ticketId());
         if (ticketOpt.isEmpty()) {
-            return ResponseWrapper.error("Invalid TicketID", "Ticket not found.");
+            return ResponseWrapper.badRequest("Ticket not found.", getPropMessage("api.response.400", request.lang()));
         }
 
         TicketTime ticketTime = new TicketTime();
@@ -65,39 +65,39 @@ public class TicketTimeService {
 
     public ResponseWrapper<?> selectTime(TicketTimeSelectRequest request) {
         if (request.ticketId() == null) {
-            return ResponseWrapper.error("Invalid TicketID", "You need to assign a TicketID");
+            return ResponseWrapper.badRequest("You need to assign a TicketID", getPropMessage("api.response.400", request.lang()));
         }
 
         Optional<TicketTime> ticketTimeOpt = ticketTimeRepository.findByTicketId(request.ticketId());
         if (ticketTimeOpt.isEmpty()) {
-            return ResponseWrapper.error("Invalid TicketID", "Ticket not found.");
+            return ResponseWrapper.badRequest("Ticket not found.", getPropMessage("api.response.400", request.lang()));
         }
 
         TicketTime ticketTime = ticketTimeOpt.get();
         Integer time = ticketTime.getTime();
-        return ResponseWrapper.ok(new TicketTimeSelectResponse(time), "Time selected successfully.");
+        return ResponseWrapper.ok(new TicketTimeSelectResponse(time), getPropMessage("api.response.200", request.lang()));
     }
 
     public ResponseWrapper<?> updateTime(Long ticketId, TicketTimeUpdateRequest request) {
         if (request.insertId() == null) {
-            return ResponseWrapper.error("Invalid InsertId", "You need to assign a InsertId fro locating the correct Time");
+            return ResponseWrapper.badRequest("You need to assign a InsertId fro locating the correct Time", getPropMessage("api.response.400", request.lang()));
         }
 
         if (request.zeit() == null) {
-            return ResponseWrapper.error("Invalid Zeit", "You need to assign a valid Time Value in Seconds.");
+            return ResponseWrapper.badRequest("You need to assign a valid Time Value in Seconds.", getPropMessage("api.response.400", request.lang()));
         }
 
         Optional<TicketTime> ticketTimeOpt = ticketTimeRepository.findByTicketId(ticketId);
 
         if (ticketTimeOpt.isEmpty()) {
-            return ResponseWrapper.error("Invalid TicketID", "Ticket not found.");
+            return ResponseWrapper.badRequest("Ticket not found.", getPropMessage("api.response.400", request.lang()));
         }
 
         TicketTime ticketTime = ticketTimeOpt.get();
 
         if (request.zeit() < 1) {
             ticketTimeRepository.delete(ticketTime);
-            return ResponseWrapper.error("Invalid Zeit", "Ticket Time was deleted");
+            return ResponseWrapper.ok("Ticket Time was deleted", getPropMessage("api.response.200", request.lang()));
         }
         ticketTime.setTime(request.zeit());
 

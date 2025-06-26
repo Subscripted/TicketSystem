@@ -42,12 +42,12 @@ public class TicketService {
         Optional<TicketUser> tester = ticketUserRepository.findById(request.assignedTesterId());
 
         if (user.isEmpty()) {
-            return ResponseWrapper.badRequest("User not found", "No user with ID " + request.assignedUserId() + " exists.");
+            return ResponseWrapper.badRequest("No user with ID " + request.assignedUserId() + " exists.", getPropMessage("api.response.400", request.lang()));
         }
 
 
         if (request.title() == null || request.title().isBlank()) {
-            return ResponseWrapper.error("Title cannot be empty");
+            return ResponseWrapper.badRequest("Title cannot be empty", getPropMessage("api.response.400", request.lang()));
         }
 
         Ticket ticket = new Ticket();
@@ -78,7 +78,7 @@ public class TicketService {
     public ResponseWrapper<?> deleteTicket(long id, TicketDeleteRequest request) {
         Optional<Ticket> ticketOpt = ticketRepository.findById(id);
         if (ticketOpt.isEmpty()) {
-            return ResponseWrapper.badRequest("Ticket not found", "No ticket with ID " + id);
+            return ResponseWrapper.badRequest("No ticket with ID " + id, getPropMessage("api.response.400", request.lang()));
         }
 
         Ticket ticket = ticketOpt.get();
@@ -121,7 +121,7 @@ public class TicketService {
         if (request.testerId() != null && !Objects.equals(request.testerId(), getIdOrNull(ticket.getAssignedTester()))) {
             Optional<TicketUser> tester = ticketUserRepository.findById(request.testerId());
             if (tester.isEmpty()) {
-                return ResponseWrapper.badRequest("Tester user not found");
+                return ResponseWrapper.badRequest("Tester user not found", getPropMessage("api.response.400", request.lang()));
             }
 
             changedFields.put("testerId", Map.of(
@@ -134,7 +134,7 @@ public class TicketService {
         if (request.assignedUserId() != null && !Objects.equals(request.assignedUserId(), getIdOrNull(ticket.getAssignedUser()))) {
             Optional<TicketUser> user = ticketUserRepository.findById(request.assignedUserId());
             if (user.isEmpty()) {
-                return ResponseWrapper.badRequest("Assigned user not found");
+                return ResponseWrapper.badRequest("Assigned user not found", getPropMessage("api.response.400", request.lang()));
             }
 
             changedFields.put("assignedUserId", Map.of(
@@ -166,7 +166,7 @@ public class TicketService {
         }
 
         if (tickets.isEmpty()) {
-            return ResponseWrapper.badRequest(List.of(), "No tickets found");
+            return ResponseWrapper.ok(List.of(), "No tickets found");
         }
 
         List<TicketSelectResponse> responseList = tickets.stream()
