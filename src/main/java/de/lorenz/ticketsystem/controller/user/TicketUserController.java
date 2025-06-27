@@ -1,6 +1,7 @@
 package de.lorenz.ticketsystem.controller.user;
 
 
+import de.lorenz.ticketsystem.controller.ControllerDefaults;
 import de.lorenz.ticketsystem.dto.request.TicketUserCreateRequest;
 import de.lorenz.ticketsystem.dto.request.TicketUserDeleteRequest;
 import de.lorenz.ticketsystem.dto.request.TicketUserUpdateRequest;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/ticket/user")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TicketUserController {
+public class TicketUserController extends ControllerDefaults {
 
     final TicketUserService ticketUserService;
 
@@ -34,5 +35,10 @@ public class TicketUserController {
    public ResponseWrapper<?> updateTicketUser(@PathVariable Long id, @RequestBody TicketUserUpdateRequest request) {
         return ticketUserService.updateTicketUser(id, request);
    }
+
+    @Override
+    protected String getVersionString() {
+        return "TicketUser-v1.0.0";
+    }
 }
 

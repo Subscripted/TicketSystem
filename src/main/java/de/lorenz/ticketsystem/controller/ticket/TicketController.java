@@ -1,6 +1,7 @@
 package de.lorenz.ticketsystem.controller.ticket;
 
 
+import de.lorenz.ticketsystem.controller.ControllerDefaults;
 import de.lorenz.ticketsystem.dto.request.TicketCreateRequest;
 import de.lorenz.ticketsystem.dto.request.TicketDeleteRequest;
 import de.lorenz.ticketsystem.dto.request.TicketSelectRequest;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/ticket/tickets")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TicketController {
+public class TicketController extends ControllerDefaults {
 
     final TicketService ticketService;
 
@@ -38,6 +39,11 @@ public class TicketController {
     @PostMapping("/select")
     public ResponseWrapper<?> selectTickets(@RequestBody TicketSelectRequest request) {
         return ticketService.selectTickets(request);
+    }
+
+    @Override
+    protected String getVersionString() {
+        return "Tickets-v1.0.0";
     }
 
 }
