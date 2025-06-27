@@ -1,6 +1,6 @@
 package de.lorenz.ticketsystem.utils;
 
-public class NameUtils {
+public class APIUtils {
 
     public static String shortenName(String fullName) {
         if (fullName == null || fullName.isBlank()) return "";
@@ -15,6 +15,19 @@ public class NameUtils {
         char lastnameLetter = piece[1].charAt(0);
 
         return ("" + firstnameLetter + lastnameLetter).toUpperCase();
+    }
+
+    public static String cleanString(String param) {
+        int maxLength = 1_000_000;
+        if (param == null || param.isBlank()) return "";
+        param = param.length() > maxLength ? param.substring(0, maxLength) : param;
+        param = param.replaceAll("\\d+", "");
+        return param;
+    }
+
+
+    public static Integer cleanInteger(Integer param) {
+        return param;
     }
 }
 

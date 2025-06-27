@@ -8,7 +8,7 @@ import de.lorenz.ticketsystem.dto.response.TicketUserUpdateResponse;
 import de.lorenz.ticketsystem.entity.TicketUser;
 import de.lorenz.ticketsystem.repo.TicketUserRepository;
 import de.lorenz.ticketsystem.service.lang.LanguageService;
-import de.lorenz.ticketsystem.utils.NameUtils;
+import de.lorenz.ticketsystem.utils.APIUtils;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,7 @@ public class TicketUserService {
         user = new TicketUser();
         user.setEmail(request.email());
         user.setName(request.name());
-        user.setShortName(NameUtils.shortenName(request.name()));
+        user.setShortName(APIUtils.shortenName(request.name()));
         ticketUserRepository.save(user);
         return ResponseWrapper.ok(request, getPropMessage("api.response.200", request.lang()));
     }
