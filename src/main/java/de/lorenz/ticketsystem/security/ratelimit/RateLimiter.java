@@ -36,14 +36,20 @@ public class RateLimiter extends OncePerRequestFilter {
         if (bucket.tryConsume(1)) {
             filterChain.doFilter(request, response);
         } else {
-            response.setStatus(GlobalHttpStatusCode.TO_MANY_REQUESTS.getCode());
+            long waitSeconds = 60; // Fallback statisch – Bucket4j gibt keine direkte Wartezeit zurück
+
+            System.out.println("RateLimit: " + ip + " geblockt (verfügbare Tokens: " + bucket.getAvailableTokens() + ")");
+
+            response.setStatus(GlobalHttpStatusCode.TO_MANY_REQUESTS.getCode()); // 429
             response.setContentType("application/json");
 
             Map<String, Object> innerResponse = new HashMap<>();
             innerResponse.put("message", GlobalExceptionMsg.TOO_MANY_REQUESTS.getExceptionMsg());
+            innerResponse.put("retryAfterSeconds", waitSeconds);
 
             ResponseWrapper<Object> wrapper = new ResponseWrapper<>(
-                    null, GlobalHttpStatusCode.FORBIDDEN.getCode(),
+                    null,
+                    GlobalHttpStatusCode.TO_MANY_REQUESTS.getCode(),
                     innerResponse
             );
 
@@ -54,7 +60,12 @@ public class RateLimiter extends OncePerRequestFilter {
 
     private Bucket newBucket(String ip) {
         return Bucket.builder()
-                .addLimit(Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(1))))
+                .addLimit(
+                        Bandwidth.classic(
+                                10,
+                                Refill.intervally(10, Duration.ofMinutes(1))
+                        )
+                )
                 .build();
     }
 }

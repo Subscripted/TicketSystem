@@ -66,6 +66,21 @@ public class GlobalExceptionHandler {
         return ResponseWrapper.badRequest(response, getPropMessage("api.response.400", "en"));
     }
 
+
+    @ExceptionHandler(RateLimitException.class)
+    public ResponseEntity<ResponseWrapper<Object>> handleRateLimit(RateLimitException ex) {
+        return ResponseEntity
+                .status(429)
+                .body(new ResponseWrapper<>(
+                        null,
+                        429,
+                        Map.of(
+                                "message", ex.getMessage(),
+                                "retryAfterSeconds", ex.getRetryAfterSeconds()
+                        )
+                ));
+    }
+
     private String getPropMessage(String key, String lang) {
         return languageService.getMessage(key, lang);
     }

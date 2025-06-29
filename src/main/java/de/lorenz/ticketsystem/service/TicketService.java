@@ -32,22 +32,22 @@ public class TicketService {
 
     public ResponseWrapper<?> createTicket(TicketCreateRequest request) {
 
-        String apiResponse;
-
         if (request.assignedUserId() == null) {
             return ResponseWrapper.error("User not found", "You have to assign a user first.");
         }
 
         Optional<TicketUser> user = ticketUserRepository.findById(request.assignedUserId());
-        Optional<TicketUser> tester = ticketUserRepository.findById(request.assignedTesterId());
-
         if (user.isEmpty()) {
-            return ResponseWrapper.badRequest("No user with ID " + request.assignedUserId() + " exists.", getPropMessage("api.response.400", request.lang()));
+            return ResponseWrapper.badRequest("No user with ID " + request.assignedUserId() + " exists.",
+                    getPropMessage("api.response.400", request.lang()));
         }
-
 
         if (request.title() == null || request.title().isBlank()) {
             return ResponseWrapper.badRequest("Title cannot be empty", getPropMessage("api.response.400", request.lang()));
+        }
+
+        if (request.type() == null) {
+            return ResponseWrapper.badRequest("Type cannot be empty", getPropMessage("api.response.400", request.lang()));
         }
 
         Ticket ticket = new Ticket();
@@ -56,12 +56,18 @@ public class TicketService {
         ticket.setNotiz(request.notiz());
         ticket.setStatus(request.status());
         ticket.setAssignedUser(user.get());
-        tester.ifPresent(ticket::setAssignedTester);
+
+        if (request.assignedTesterId() != null) {
+            Optional<TicketUser> tester = ticketUserRepository.findById(request.assignedTesterId());
+            if (tester.isEmpty()) {
+                return ResponseWrapper.badRequest("No tester with ID " + request.assignedTesterId() + " exists.",
+                        getPropMessage("api.response.400", request.lang()));
+            }
+            ticket.setAssignedTester(tester.get());
+        }
 
         ticketRepository.save(ticket);
 
-
-        apiResponse = getPropMessage("api.response.200", request.lang());
         return ResponseWrapper.ok(
                 new TicketCreateResponse(
                         ticket.getTitle(),
@@ -69,9 +75,9 @@ public class TicketService {
                         ticket.getAssignedUser().getUserId(),
                         ticket.getType(),
                         ticket.getStatus(),
-                        tester.map(TicketUser::getUserId).orElse(null)
+                        ticket.getAssignedTester() != null ? ticket.getAssignedTester().getUserId() : null
                 ),
-                apiResponse
+                getPropMessage("api.response.200", request.lang())
         );
     }
 
@@ -144,6 +150,10 @@ public class TicketService {
             ticket.setAssignedUser(user.get());
         }
 
+        if (changedFields.isEmpty()){
+            return ResponseWrapper.ok("Es wurde kein Feld geupdated",  getPropMessage("api.response.200", request.lang()));
+        }
+
         ticketRepository.save(ticket);
         return ResponseWrapper.ok(new TicketUpdateResponse(changedFields), getPropMessage("api.response.200", request.lang()));
     }
@@ -152,18 +162,14 @@ public class TicketService {
         return getTicketsWithRules(request);
     }
 
-    private ResponseWrapper<?> getTicketsWithRules(TicketSelectRequest request) {
-        List<Ticket> tickets;
 
-        if (request.assignedUserId() != null && request.type() != null) {
-            tickets = ticketRepository.findByAssignedUserIdAndType(request.assignedUserId(), request.type());
-        } else if (request.assignedUserId() != null) {
-            tickets = ticketRepository.findByAssignedUser_UserId(request.assignedUserId());
-        } else if (request.type() != null) {
-            tickets = ticketRepository.findByType(request.type());
-        } else {
-            tickets = ticketRepository.findAll();
-        }
+    private ResponseWrapper<?> getTicketsWithRules(TicketSelectRequest request) {
+        List<Ticket> tickets = ticketRepository.findByFilter(
+                request.id(),
+                request.assignedUserId(),
+                request.type(),
+                request.status()
+        );
 
         if (tickets.isEmpty()) {
             return ResponseWrapper.ok(List.of(), "No tickets found");
@@ -172,6 +178,8 @@ public class TicketService {
         List<TicketSelectResponse> responseList = tickets.stream()
                 .map(ticket -> new TicketSelectResponse(
                         ticket.getId(),
+                        ticket.getStatus(),
+                        ticket.getType(),
                         getIdOrNull(ticket.getAssignedUser()),
                         getIdOrNull(ticket.getAssignedTester()),
                         ticket.getTitle(),
