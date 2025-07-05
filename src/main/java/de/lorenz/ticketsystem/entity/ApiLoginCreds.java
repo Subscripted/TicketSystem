@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "logincreds")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoginCreds {
+public class ApiLoginCreds {
 
     @Getter
     @Setter

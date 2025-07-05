@@ -2,7 +2,7 @@ package de.lorenz.ticketsystem.service;
 
 import de.lorenz.ticketsystem.dto.request.TokenCreateRequest;
 import de.lorenz.ticketsystem.entity.ApiToken;
-import de.lorenz.ticketsystem.entity.LoginCreds;
+import de.lorenz.ticketsystem.entity.ApiLoginCreds;
 import de.lorenz.ticketsystem.globals.GlobalExceptionMsg;
 import de.lorenz.ticketsystem.repo.ApiTokenRepository;
 import de.lorenz.ticketsystem.repo.LoginCredsRepository;
@@ -42,7 +42,7 @@ public class TokenService {
     }
     //todo: Record erstellen für Response
     public ResponseWrapper<?> createToken(TokenCreateRequest request) {
-        Optional<LoginCreds> creds = loginCredsRepository.findByEmailAndClientIdAndClientSecret(
+        Optional<ApiLoginCreds> creds = loginCredsRepository.findByEmailAndClientIdAndClientSecret(
 
                 request.email(),
                 request.clientId(),
