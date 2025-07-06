@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import de.lorenz.ticketsystem.service.lang.LanguageService;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,9 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@AllArgsConstructor
 public class GlobalExceptionHandler {
 
-    LanguageService languageService;
+   final LanguageService languageService;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleAllExceptions(Exception ex, HttpServletRequest request) {
@@ -55,6 +57,12 @@ public class GlobalExceptionHandler {
             return ResponseWrapper.badRequest(response, "Invalid JSON field");
         }
 
+        if (ex.getMessage() != null && ex.getMessage().contains("Required request body is missing")) {
+            response.put("error", "Missing request body");
+            response.put("message", "Ein JSON-Body ist erforderlich, wurde aber nicht übergeben.");
+            return ResponseWrapper.badRequest(response, getPropMessage("api.response.400", "en"));
+        }
+
         if (cause != null && cause.getLocalizedMessage() != null) {
             response.put("error", cause.getClass().getSimpleName());
             response.put("message", cause.getLocalizedMessage());
@@ -65,7 +73,6 @@ public class GlobalExceptionHandler {
 
         return ResponseWrapper.badRequest(response, getPropMessage("api.response.400", "en"));
     }
-
 
     @ExceptionHandler(RateLimitException.class)
     public ResponseEntity<ResponseWrapper<Object>> handleRateLimit(RateLimitException ex) {
