@@ -1,5 +1,10 @@
 package de.lorenz.ticketsystem.utils;
 
+import org.springframework.stereotype.Component;
+
+import java.util.regex.Pattern;
+
+@Component
 public class APIUtils {
 
     public static String shortenName(String fullName) {
@@ -27,7 +32,14 @@ public class APIUtils {
 
 
     public static Integer cleanInteger(Integer param) {
+
+
         return param;
+    }
+
+    public boolean validateEmail(String email) {
+        Pattern pattern = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,}$");
+        return pattern.matcher(email).matches();
     }
 }
 

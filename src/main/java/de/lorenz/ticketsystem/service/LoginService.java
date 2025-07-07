@@ -8,6 +8,7 @@ import de.lorenz.ticketsystem.entity.TicketUser;
 import de.lorenz.ticketsystem.repo.LoginRepository;
 import de.lorenz.ticketsystem.repo.TicketUserRepository;
 import de.lorenz.ticketsystem.security.BCryptPasswordManager;
+import de.lorenz.ticketsystem.utils.APIUtils;
 import de.lorenz.ticketsystem.utils.ResponseWrapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class LoginService {
     LoginRepository loginRepository;
     TicketUserRepository ticketUserRepository;
     BCryptPasswordManager bCryptPasswordManager;
+    APIUtils apiUtils;
 
     public ResponseWrapper<?> login(LoginRequest request) {
         String identifier = request.identifier();
@@ -39,7 +41,7 @@ public class LoginService {
             return ResponseWrapper.badRequest("Missing password");
         }
 
-        if (validateEmail(identifier)) {
+        if (apiUtils.validateEmail(identifier)) {
             // E-Mail Login
             creds = loginRepository.findByEmail(identifier).orElse(null);
         } else {
@@ -64,7 +66,7 @@ public class LoginService {
             return ResponseWrapper.badRequest("Missing email");
         }
 
-        if (!validateEmail(request.email())) {
+        if (!apiUtils.validateEmail(request.email())) {
             return ResponseWrapper.badRequest("Invalid email format");
         }
 
@@ -85,8 +87,4 @@ public class LoginService {
         return ResponseWrapper.ok("Created a new Login", "Account Created");
     }
 
-    private boolean validateEmail(String email) {
-        Pattern pattern = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,}$");
-        return pattern.matcher(email).matches();
-    }
 }
