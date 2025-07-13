@@ -16,7 +16,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -81,8 +80,6 @@ public class LoginService {
         TicketLoginCreds account = new TicketLoginCreds();
         account.setEmail(request.email());
         account.setPasswordHash(bCryptPasswordManager.encodePassword(request.password()));
-
-        loginRepository.save(account);
 
         return ResponseWrapper.ok("Created a new Login", "Account Created");
     }
